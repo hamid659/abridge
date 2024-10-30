@@ -10,4 +10,8 @@ resource "google_project_service" "enable_apis" {
   project = var.project_id
   service = each.value
   disable_dependent_services = true 
+  
+  lifecycle {
+    prevent_destroy = true  # Prevent this resource from being destroyed
+  }
 }
