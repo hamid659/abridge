@@ -1,0 +1,22 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: terraform
+spec:
+  containers:
+    - name: terraform
+      image: hashicorp/terraform:1.6.2 
+      volumeMounts:
+        - name: gcp-credentials
+          mountPath: /var/secrets/gcp
+          readOnly: true
+      env:
+        - name: GOOGLE_APPLICATION_CREDENTIALS
+          value: /var/secrets/gcp/key.json  # Path to the credentials file inside the pod
+      #workingDir: /abridge-test/terraform  # Adjusted working directory
+      command: ["sh", "-c", "apk add --no-cache git && git clone https://github.com/hamid659/abridge-test.git /abridge-test && cd /abridge-test/terraform && terraform init && tail -f /dev/null"]
+      # This will keep the container running
+  volumes:
+    - name: gcp-credentials
+      secret:
+        secretName: gcp-credentials  # Name of the secret created earlier
