@@ -18,9 +18,10 @@ spec:
         - |
           apk add --no-cache git && \
           git clone https://github.com/hamid659/abridge-test.git /abridge-test && \
-          cd /abridge-test/terraform && terraform init && \
-          cd /abridge-test/terraform &&  terraform plan -var-file=./environments/dev.tfvars -out=/var/log/terraform/plan.log && \
-          tail -f /dev/null
+          cd /abridge-test/scripts && \
+          chmod +x run_terraform.sh && \
+          ./run_terraform.sh
+
   volumes:
     - name: gcp-credentials-volume
       secret:
