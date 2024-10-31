@@ -13,6 +13,10 @@ spec:
       env:
         - name: GOOGLE_APPLICATION_CREDENTIALS
           value: /var/secrets/gcp/gcp-credentials.json # Path to the credentials file inside the pod
+        - name: COMMAND
+          value: "plan"  # Default value, can be overridden
+        - name: TFVARS_PATH
+          value: "/abridge-test/terraform/environments/dev.tfvars" # Default tfvars, can be overridden
       command: ["/bin/sh", "-c"]
       args:
         - |
