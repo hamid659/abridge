@@ -6,7 +6,7 @@ resource "google_compute_network" "vpc_network" {
   description             = "VPC network for GKE cluster and resources"
   mtu                     = var.vpc_mtu
   routing_mode            = "REGIONAL"
-  depends_on = [google_project_service.enable_apis]
+  #depends_on = [google_project_service.enable_apis]
 }
 
 # Private Subnet Creation in VPC Network
@@ -43,7 +43,7 @@ resource "google_compute_subnetwork" "public_subnets" {
   region                   = var.region
   network                  = google_compute_network.vpc_network.id
   private_ip_google_access = false
-  depends_on = [google_project_service.enable_apis]
+  #depends_on = [google_project_service.enable_apis]
 }
 
 # NAT Gateway for Private Subnet

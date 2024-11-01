@@ -18,10 +18,10 @@ Before you begin, ensure you have the following:
 
 The env_init.sh script creates a Google Cloud Storage (GCS) bucket to be used as a backend for Terraform state management. This allows you to store your Terraform state files in a centralized and secure location.
 ```
-./scripts/env_init.sh  my-gcp-project US
+./scripts/setup_terraform-buckets.sh  my-gcp-project US
 ``` 
 
-## Usage
+## Module Usage
 
 ```hcl
 module "gcp_minimal_env" {
@@ -42,6 +42,36 @@ module "gcp_minimal_env" {
 Adjust the parameters in your tfvars to customize your GKE cluster (e.g., number of nodes, machine types, etc.).
 
 
+
+# Using RUN Terraform  Python Script
+This script allows you to set the Terraform backend to a Google Cloud Storage (GCS) bucket and execute Terraform actions such as plan or apply. Below are instructions on how to use the script.
+- Ensure you have Python installed (version 3.6 or higher).
+- Install the necessary packages if required (e.g., subprocess is included in the standard library).
+- Make sure you have Terraform installed and configured in your environment.
+- Ensure you have the gsutil command-line tool installed to upload files to GCS.
+
+## Script Location
+The script is located in the scripts directory of your project. Navigate to this directory in your terminal.
+
+## Usage
+```
+python run_terraform.py --project-id <YOUR_PROJECT_ID> --tf-action <ACTION> --tfvars-path <PATH_TO_TFVARS_FILE>
+```
+
+- --project-id <YOUR_PROJECT_ID>: Specify the Google Cloud Project ID, which will be used to derive the GCS bucket name (e.g., my-gcp-project).
+- --tf-action <ACTION>: Specify the Terraform action you want to execute. This can be either:
+- - plan: To create an execution plan.
+- - apply: To apply the changes required to reach the desired state of the configuration.
+- --tfvars-path <PATH_TO_TFVARS_FILE>: Provide the path to the .tfvars file that contains the variable definitions for the Terraform configuration.
+
+
+## What the Script Does
+- Update the Backend File: The script creates or updates the backend.tf file in the ../terraform directory with the specified GCS bucket name.
+
+- Run Terraform Command: Based on the specified action, it executes the corresponding Terraform command (plan or apply). If the action is apply, it automatically approves the changes without prompting for confirmation.
+
+- Outputs: The script will print messages indicating the success or failure of each operation, along with the path to the updated backend file.
+
 # Running Terraform in a Pod
 You can also execute Terraform within a Kubernetes pod using a Terraform image. This approach enables you to run Terraform code in a consistent pod environment, ensuring that all necessary libraries and dependencies are available without the need for local installations. This method simplifies the management of your Terraform infrastructure and enhances reproducibility across different environments.
 
@@ -51,14 +81,4 @@ Create a pod using terraform image with the pod configuration file located in ./
 kubectl apply -f ./k8s/tf_pod.yaml
 ```
 
-# Key Components
-##  Volume Mounts: 
-- GCP credentials are mounted as a read-only volume, ensuring that sensitive information is kept secure.
-##  Environment Variables:
-- GOOGLE_APPLICATION_CREDENTIALS: Specifies the path to the GCP credentials JSON file within the Pod.
-- COMMAND:  Specifies the Terraform command to run. The default is set to plan, but this can be overridden.
-- TFVARS_PATH: Specifies the path to the Terraform variable file (*.tfvars). The default is set to "/abridge-test/terraform/environments/dev.tfvars.
 
-## Command Execution:
-- The command section specifies a shell command to run when the container starts.
-- The args section installs Git, clones the specified repository, and runs a custom script (run_terraform.sh) that contains the Terraform commands.

@@ -1,6 +1,6 @@
 # Service Account for GKE Node Pool
 resource "google_service_account" "gke_service_account" {
-  depends_on = [google_project_service.enable_apis]
+  #depends_on = [google_project_service.enable_apis]
   account_id   = "${var.cluster_name}-gke-cluster-sa"
   display_name = "GKE Cluster Service Account"
   project  = var.project_id
@@ -8,7 +8,7 @@ resource "google_service_account" "gke_service_account" {
 
 # IAM Roles for GKE Service Account
 resource "google_project_iam_member" "gke_sa_roles" {
-  depends_on = [google_project_service.enable_apis]
+  #depends_on = [google_project_service.enable_apis]
   for_each = toset(var.gke_service_account_roles)
   project  = var.project_id
   role     = each.value
@@ -17,7 +17,7 @@ resource "google_project_iam_member" "gke_sa_roles" {
 
 # GKE Cluster
 resource "google_container_cluster" "gke_cluster" {
-  depends_on = [google_project_service.enable_apis,google_compute_subnetwork.private_subnets]
+  depends_on = [google_compute_subnetwork.private_subnets]
   project            = var.project_id
   name               = var.cluster_name
   location           = var.region

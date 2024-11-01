@@ -1,0 +1,5 @@
+# my-terraform-chart/Chart.yaml
+apiVersion: v2
+name: tf-chart
+description: A Helm chart to deploy a Terraform Pod
+version: 0.1.0

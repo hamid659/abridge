@@ -1,0 +1,39 @@
+# my-terraform-chart/templates/job.yaml
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: {{ .Values.name }}-{{ regexReplaceAll ".*/(.*)\\.tfvars" .Values.env.TFVARS_PATH "$1" | lower }}-{{ .Values.env.TF_ACTION | lower }}
+spec:
+  template:
+    metadata:
+      generateName: "{{ .Values.name }}-{{ regexReplaceAll ".*/(.*)\\.tfvars" .Values.env.TFVARS_PATH "$1" | lower }}-{{ .Values.env.TF_ACTION | lower }}-"
+    spec:
+      restartPolicy: Never
+      containers:
+        - name: {{ .Values.name }}
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          volumeMounts:
+            - name: gcp-credentials-volume
+              mountPath: /var/secrets/gcp
+              readOnly: true
+          env:
+            - name: GOOGLE_APPLICATION_CREDENTIALS
+              value: {{ .Values.env.GOOGLE_APPLICATION_CREDENTIALS }}
+            - name: PROJECT_ID
+              value: {{ .Values.env.PROJECT_ID }}
+            - name: TF_ACTION
+              value: {{ .Values.env.TF_ACTION }}
+            - name: TFVARS_PATH
+              value: {{ .Values.env.TFVARS_PATH }}
+          command: ["/bin/sh", "-c"]
+          args:
+            - |
+              git clone https://github.com/hamid659/abridge-test.git /abridge-test && \
+              cd /abridge-test/scripts && \
+              chmod +x run_terraform.py && \
+              ./run_terraform.py --project-id $PROJECT_ID --tf-action $TF_ACTION --tfvars-path $TFVARS_PATH 
+      volumes:
+        - name: gcp-credentials-volume
+          secret:
+            secretName: {{ .Values.credentialsSecretName }}

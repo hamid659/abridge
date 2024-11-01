@@ -1,0 +1,14 @@
+# my-terraform-chart/values.yaml
+name: terraform
+image:
+  repository: hamid659/terraform-gcloud
+  tag: "1.6.0"
+  pullPolicy: IfNotPresent
+
+env:
+  GOOGLE_APPLICATION_CREDENTIALS: /var/secrets/gcp/gcp-credentials.json
+  PROJECT_ID: hamid-test-24
+  TF_ACTION: plan
+  TFVARS_PATH: /abridge-test/terraform/environments/dev.tfvars
+
+credentialsSecretName: gcp-credentials-secret
