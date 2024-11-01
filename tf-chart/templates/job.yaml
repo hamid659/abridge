@@ -32,7 +32,7 @@ spec:
               git clone https://github.com/hamid659/abridge-test.git /abridge-test && \
               cd /abridge-test/scripts && \
               chmod +x run_terraform.py && \
-              ./run_terraform.py --project-id $PROJECT_ID --tf-action $TF_ACTION --tfvars-path $TFVARS_PATH 
+              python3 ./run_terraform.py --project-id $PROJECT_ID --tf-action $TF_ACTION --tfvars-path $TFVARS_PATH 
       volumes:
         - name: gcp-credentials-volume
           secret:
