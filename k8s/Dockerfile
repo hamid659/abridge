@@ -5,6 +5,7 @@ FROM ubuntu:22.04
 RUN apt-get update && apt-get install -y \
     curl \
     unzip \
+    git \
     gnupg \
     software-properties-common \
     && apt-get clean
@@ -24,10 +25,7 @@ RUN echo "deb [signed-by=/usr/share/keyrings/cloud.google.gpg] http://packages.c
     apt-get update && apt-get install -y google-cloud-sdk
 
 # Set environment variables for Terraform and gcloud
-ENV GOOGLE_APPLICATION_CREDENTIALS="/root/.config/gcloud/application_default_credentials.json"
+ENV GOOGLE_APPLICATION_CREDENTIALS="/var/secrets/gcp/gcp-credentials.json"
 
-# Workdir for Terraform configuration files
-WORKDIR /workspace
 
-# Copy your Terraform configuration files to the container
-COPY . /workspace
+

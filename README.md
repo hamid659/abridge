@@ -14,6 +14,13 @@ Before you begin, ensure you have the following:
 - Google Cloud SDK installed and authenticated.
 - Basic knowledge of Kubernetes and GCP.
 
+## Setting Up the Terraform Backend Bucket
+
+The env_init.sh script creates a Google Cloud Storage (GCS) bucket to be used as a backend for Terraform state management. This allows you to store your Terraform state files in a centralized and secure location.
+```
+./scripts/env_init.sh  my-gcp-project US
+``` 
+
 ## Usage
 
 ```hcl
@@ -36,10 +43,22 @@ Adjust the parameters in your tfvars to customize your GKE cluster (e.g., number
 
 
 # Running Terraform in a Pod
-You can also run Terraform using a pod with a Terraform image. This allows you to manage your infrastructure from within a Kubernetes environment. To do this:
+You can also execute Terraform within a Kubernetes pod using a Terraform image. This approach enables you to run Terraform code in a consistent pod environment, ensuring that all necessary libraries and dependencies are available without the need for local installations. This method simplifies the management of your Terraform infrastructure and enhances reproducibility across different environments.
 
 Create a pod using terraform image with the pod configuration file located in ./k8s folder :
 
 ``` 
 kubectl apply -f ./k8s/tf_pod.yaml
 ```
+
+# Key Components
+##  Volume Mounts: 
+- GCP credentials are mounted as a read-only volume, ensuring that sensitive information is kept secure.
+##  Environment Variables:
+- GOOGLE_APPLICATION_CREDENTIALS: Specifies the path to the GCP credentials JSON file within the Pod.
+- COMMAND:  Specifies the Terraform command to run. The default is set to plan, but this can be overridden.
+- TFVARS_PATH: Specifies the path to the Terraform variable file (*.tfvars). The default is set to "/abridge-test/terraform/environments/dev.tfvars.
+
+## Command Execution:
+- The command section specifies a shell command to run when the container starts.
+- The args section installs Git, clones the specified repository, and runs a custom script (run_terraform.sh) that contains the Terraform commands.
