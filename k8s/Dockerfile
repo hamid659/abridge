@@ -8,7 +8,12 @@ RUN apt-get update && apt-get install -y \
     git \
     gnupg \
     software-properties-common \
+    python3 \
+    python3-pip \
     && apt-get clean
+
+# Install pyOpenSSL
+RUN pip3 install pyOpenSSL
 
 # Install Terraform
 ENV TERRAFORM_VERSION=1.6.0

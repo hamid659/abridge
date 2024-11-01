@@ -13,8 +13,6 @@ spec:
       env:
         - name: GOOGLE_APPLICATION_CREDENTIALS
           value: /var/secrets/gcp/gcp-credentials.json # Path to the credentials file inside the pod
-        - name: PROJECT_ID
-          value: "${PROJECT_ID}"  # Placeholder to be replaced at runtime
         - name: COMMAND
           value: "plan"  # Default value, can be overridden
         - name: TFVARS_PATH
