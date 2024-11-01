@@ -33,5 +33,5 @@ else
   echo "Signed URL for the Terraform plan: $SIGNED_URL"
 fi
 
-# Keep the container running
-tail -f /dev/null
+# # Keep the container running
+# tail -f /dev/null
