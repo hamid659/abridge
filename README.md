@@ -67,18 +67,16 @@ python run_terraform.py --project-id <YOUR_PROJECT_ID> --tf-action <ACTION> --tf
 
 ## What the Script Does
 - Update the Backend File: The script creates or updates the backend.tf file in the ../terraform directory with the specified GCS bucket name.
-
 - Run Terraform Command: Based on the specified action, it executes the corresponding Terraform command (plan or apply). If the action is apply, it automatically approves the changes without prompting for confirmation.
-
 - Outputs: The script will print messages indicating the success or failure of each operation, along with the path to the updated backend file.
 
-# Running Terraform in a Pod
-You can also execute Terraform within a Kubernetes pod using a Terraform image. This approach enables you to run Terraform code in a consistent pod environment, ensuring that all necessary libraries and dependencies are available without the need for local installations. This method simplifies the management of your Terraform infrastructure and enhances reproducibility across different environments.
+# Running Terraform in a K8s job 
+You can also execute Terraform within a Kubernetes job using a Terraform image. This approach enables you to run Terraform code in a consistent pod environment, ensuring that all necessary libraries and dependencies are available without the need for local installations. This method simplifies the management of your Terraform infrastructure and enhances reproducibility across different environments.
 
-Create a pod using terraform image with the pod configuration file located in ./k8s folder :
+Create a k8s job using terraform image with the job configuration file located in ./k8s folder :
 
 ``` 
-kubectl apply -f ./k8s/tf_pod.yaml
+kubectl apply -f ./k8s/tf_job.yaml
 ```
 
 

@@ -1,0 +1,37 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: terraform-job
+spec:
+  template:
+    metadata:
+      name: terraform
+      labels:
+        app: terraform
+    spec:
+      restartPolicy: Never
+      containers:
+        - name: terraform
+          image: hamid659/terraform-gcloud:1.6.0
+          volumeMounts:
+            - name: gcp-credentials-volume
+              mountPath: /var/secrets/gcp
+              readOnly: true
+          env:
+            - name: GOOGLE_APPLICATION_CREDENTIALS
+              value: /var/secrets/gcp/gcp-credentials.json
+            - name: TF_ACTION
+              value: "plan"  # Default value, can be overridden
+            - name: TFVARS_PATH
+              value: "/abridge-test/terraform/environments/dev.tfvars" # Default tfvars, can be overridden
+          command: ["/bin/sh", "-c"]
+          args:
+            - |
+              git clone https://github.com/hamid659/abridge-test.git /abridge-test && \
+              cd /abridge-test/scripts && \
+              chmod +x run_terraform.sh && \
+              ./run_terraform.sh
+      volumes:
+        - name: gcp-credentials-volume
+          secret:
+            secretName: gcp-credentials-secret
